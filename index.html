@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert Two Images to Base64</title>
+</head>
+
+<body>
+  <h1>Convert Two Images to Base64</h1>
+
+  <label for="fileInputFront">Front Image:</label>
+  <input type="file" id="fileInputFront" />
+  <br><br>
+  <img id="imagePreviewFront" src="" alt="Front Image Preview" style="max-width: 500px;" />
+  <br><br>
+  <textarea id="base64OutputFront" rows="10" cols="80"
+    placeholder="Front image Base64 output will appear here..."></textarea>
+
+  <br><br>
+
+  <label for="fileInputBack">Back Image:</label>
+  <input type="file" id="fileInputBack" />
+  <br><br>
+  <img id="imagePreviewBack" src="" alt="Back Image Preview" style="max-width: 500px;" />
+  <br><br>
+  <textarea id="base64OutputBack" rows="10" cols="80"
+    placeholder="Back image Base64 output will appear here..."></textarea>
+
+  <button onclick="send()">SEND</button>
+
+  <script>
+    let front, back;
+    document.getElementById('fileInputFront').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const base64String = e.target.result;
+          document.getElementById('imagePreviewFront').src = base64String;
+          document.getElementById('base64OutputFront').textContent = base64String;
+          front = base64String;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('fileInputBack').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const base64String = e.target.result;
+          document.getElementById('imagePreviewBack').src = base64String;
+          document.getElementById('base64OutputBack').textContent = base64String;
+          back = base64String;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function send() {
+      const url = 'http://localhost:5152/api/potara/post';  // Thay thế URL của bạn ở đây
+      const data = {
+        front: front,
+        back: back
+      };
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert('success');
+          console.log('Success:', data);
+        })
+        .catch(error => {
+          alert('error');
+          console.error('Error:', error);
+        });
+    }
+
+  </script>
+</body>
+
+</html>
