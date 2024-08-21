@@ -1,4 +1,3 @@
-const Potara = require("../models/potara.model");
 const multer = require('multer');
 const path = require('path');
 
