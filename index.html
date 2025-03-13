@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quản lý Hũ Tài Chính</title>
+  <link rel="stylesheet" href="./css/uiverse.io.css">
+  <script type="module" src="./js/main.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -94,16 +97,44 @@
       color: white;
       cursor: pointer;
     }
+
+    .deposit {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    /* Màu Xanh cho Nạp Tiền */
+    .withdraw {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Màu Đỏ cho Rút Tiền */
   </style>
 </head>
 
 <body>
+  <!-- Dialog xác nhận -->
+  <dialog id="confirmDialog">
+    <p id="confirmMessage"></p>
+    <button id="confirmYes">Xác nhận</button>
+    <button id="confirmNo">Hủy</button>
+  </dialog>
+
+  <!-- Dialog thông báo -->
+  <dialog id="messageDialog">
+    <p id="dialogMessage"></p>
+    <button id="closeDialog">OK</button>
+  </dialog>
+
 
   <h1>Quản lý Hũ Tài Chính</h1>
 
   <div>
+    <!-- From Uiverse.io by WhiteNervosa -->
     <input type="number" id="totalAmount" placeholder="Nhập số tiền tổng">
-    <button class="add-btn" onclick="napTien()">Nạp Tiền</button>
+    <button class="add-btn" id="btnNapTien">Nạp Tiền</button>
+
   </div>
 
   <div>
@@ -116,16 +147,14 @@
       <option value="enjoyment">Hưởng thụ</option>
       <option value="charity">Từ thiện</option>
     </select>
-    <button class="withdraw-btn" onclick="rutTien()">Rút Tiền</button>
+    <button class="withdraw-btn" id="btnRutTien">Rút Tiền</button>
   </div>
 
   <div class="total-money">
     Tổng số dư: <span id="total-money">0</span> VND
   </div>
 
-  <div class="container" id="jars-container">
-    <!-- Hũ tài chính sẽ hiển thị ở đây -->
-  </div>
+  <div class="container" id="jars-container"></div>
 
   <h2>Lịch sử giao dịch</h2>
   <table>
@@ -137,89 +166,8 @@
         <th>Thời gian</th>
       </tr>
     </thead>
-    <tbody id="transactionHistory">
-      <!-- Giao dịch sẽ hiển thị ở đây -->
-    </tbody>
+    <tbody id="transactionHistory"></tbody>
   </table>
-
-  <script>
-    const jars = {
-      essential: { name: "Thiết yếu", percentage: 55, amount: 0 },
-      savings: { name: "Tiết kiệm", percentage: 10, amount: 0 },
-      education: { name: "Giáo dục", percentage: 10, amount: 0 },
-      investment: { name: "Đầu tư", percentage: 10, amount: 0 },
-      enjoyment: { name: "Hưởng thụ", percentage: 10, amount: 0 },
-      charity: { name: "Từ thiện", percentage: 5, amount: 0 }
-    };
-
-    let transactions = [];
-
-    function updateUI() {
-      const container = document.getElementById("jars-container");
-      const totalMoneyElement = document.getElementById("total-money");
-      const transactionTable = document.getElementById("transactionHistory");
-      container.innerHTML = "";
-      transactionTable.innerHTML = "";
-
-      let totalMoney = 0;
-
-      for (let key in jars) {
-        totalMoney += jars[key].amount;
-
-        let jarElement = document.createElement("div");
-        jarElement.className = "jar";
-        jarElement.innerHTML = `
-                    <h2>${jars[key].name} (${jars[key].percentage}%)</h2>
-                    <p class="amount">${jars[key].amount.toLocaleString()} VND</p>
-                `;
-        container.appendChild(jarElement);
-      }
-
-      totalMoneyElement.textContent = totalMoney.toLocaleString();
-
-      transactions.forEach(trx => {
-        let row = document.createElement("tr");
-        row.innerHTML = `
-                    <td>${trx.type}</td>
-                    <td>${trx.jar}</td>
-                    <td>${trx.amount.toLocaleString()} VND</td>
-                    <td>${trx.time}</td>
-                `;
-        transactionTable.appendChild(row);
-      });
-    }
-
-    function napTien() {
-      let money = parseInt(document.getElementById("totalAmount").value);
-      if (money > 0) {
-        for (let key in jars) {
-          let amountToAdd = (money * jars[key].percentage) / 100;
-          jars[key].amount += amountToAdd;
-        }
-        transactions.push({ type: "Nạp tiền", jar: "Tất cả", amount: money, time: new Date().toLocaleString() });
-        updateUI();
-        alert(`✅ Đã nạp ${money.toLocaleString()} VND vào các hũ`);
-      }
-      document.getElementById("totalAmount").value = "";
-    }
-
-    function rutTien() {
-      let money = parseInt(document.getElementById("withdrawAmount").value);
-      let jarKey = document.getElementById("jarSelect").value;
-
-      if (money > 0 && jars[jarKey].amount >= money) {
-        jars[jarKey].amount -= money;
-        transactions.push({ type: "Rút tiền", jar: jars[jarKey].name, amount: money, time: new Date().toLocaleString() });
-        updateUI();
-        alert(`✅ Đã rút ${money.toLocaleString()} VND từ hũ ${jars[jarKey].name}`);
-      } else {
-        alert(`⚠️ Hũ ${jars[jarKey].name} không đủ tiền!`);
-      }
-      document.getElementById("withdrawAmount").value = "";
-    }
-
-    updateUI();
-  </script>
 
 </body>
 

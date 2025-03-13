@@ -49,6 +49,9 @@ function readNumber(number) {
   return result.trim() + " đồng";
 }
 
+
+export { readNumber };
+
 // 🔹 Ví dụ sử dụng:
 console.log(readNumber(123456)); // "Một trăm hai mươi ba nghìn bốn trăm năm mươi sáu đồng"
 console.log(readNumber(1000200)); // "Một triệu hai trăm đồng"
