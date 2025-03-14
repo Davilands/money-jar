@@ -35,30 +35,17 @@ async function getData(path) {
   }
 }
 
-// 🔹 Thêm giao dịch vào lịch sử
-async function addTransaction(type, jarName, amount) {
+async function addTransaction(type, jar, amount, reason = "") {
   const transaction = {
     type,
-    jar: jarName,
+    jar,
     amount,
-    time: new Date().toLocaleString()
+    time: new Date().toLocaleString(),
+    reason // Lưu lý do vào Firebase
   };
 
-  try {
-    const response = await fetch(`${FIREBASE_URL}/transactions.json`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(transaction),
-    });
-
-    if (response.ok) {
-      console.log(`✅ Giao dịch ${type} ${amount.toLocaleString()} VND đã được lưu.`);
-    } else {
-      console.error("❌ Lỗi khi lưu giao dịch!");
-    }
-  } catch (error) {
-    console.error("❌ Lỗi kết nối Firebase:", error);
-  }
+  await saveData(`transactions/${Date.now()}`, transaction);
 }
+
 
 export { saveData, getData, addTransaction };

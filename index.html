@@ -109,6 +109,28 @@
       color: #721c24;
     }
 
+    .gif-container {
+      display: flex;
+      display: none;
+      height: 100%;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .gif-container img {
+      max-width: 300px;
+      max-height: 300px;
+    }
+
     /* Màu Đỏ cho Rút Tiền */
   </style>
 </head>
@@ -117,9 +139,11 @@
   <!-- Dialog xác nhận -->
   <dialog id="confirmDialog">
     <p id="confirmMessage"></p>
+    <div id="confirmExtra"></div> <!-- Đây là nơi ô nhập lý do sẽ hiển thị -->
     <button id="confirmYes">Xác nhận</button>
     <button id="confirmNo">Hủy</button>
   </dialog>
+
 
   <!-- Dialog thông báo -->
   <dialog id="messageDialog">
@@ -129,6 +153,11 @@
 
 
   <h1>Quản lý Hũ Tài Chính</h1>
+
+  <div id="transactionGifContainer" class="gif-container">
+    <img id="transactionGif" src="" alt="Transaction GIF">
+  </div>
+
 
   <div>
     <!-- From Uiverse.io by WhiteNervosa -->
@@ -157,16 +186,17 @@
   <div class="container" id="jars-container"></div>
 
   <h2>Lịch sử giao dịch</h2>
-  <table>
+  <table id="transactionHistory">
     <thead>
       <tr>
         <th>Loại</th>
         <th>Hũ</th>
         <th>Số tiền</th>
         <th>Thời gian</th>
+        <th>Lý do</th>
       </tr>
     </thead>
-    <tbody id="transactionHistory"></tbody>
+    <tbody></tbody>
   </table>
 
 </body>
