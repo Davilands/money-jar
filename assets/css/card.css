@@ -105,3 +105,75 @@ img {
   z-index: 0;
   transition: transform 0.3s ease-out;
 }
+
+
+/* Định dạng container chứa card */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  /* Tự động chia cột */
+  gap: 10px;
+  /* Khoảng cách giữa các card */
+  justify-content: center;
+}
+
+/* Khi màn hình nhỏ hơn 600px (điện thoại), hiển thị 2 card trên một hàng */
+@media (max-width: 600px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+    /* Hiển thị 2 card trên một hàng */
+  }
+
+  .card {
+    width: 100%;
+    /* Đảm bảo card vừa với cột */
+
+    height: 300px;
+    /* Chiều cao tự động */
+  }
+}
+
+.circle {
+  width: 120px;
+  /* Điều chỉnh kích thước phù hợp */
+  height: 120px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease-out;
+}
+
+.circle:after {
+  content: "";
+  width: 110px;
+  /* Giảm kích thước để không tràn */
+  height: 110px;
+  position: absolute;
+  background: var(--bg-color);
+  border-radius: 50%;
+  top: 5px;
+  /* Điều chỉnh để vòng tròn nằm chính giữa */
+  left: 5px;
+  transition: opacity 0.3s ease-out;
+}
+
+.overlay {
+  width: 100px;
+  /* Giảm kích thước để không bị lệch */
+  height: 100px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  position: absolute;
+  top: 35%;
+  left: 44%;
+  /* Căn giữa theo chiều ngang */
+  transform: translate(-50%, -50%);
+  /* Giữ vị trí chính giữa */
+  z-index: 0;
+  transition: transform 0.3s ease-out;
+}
