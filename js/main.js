@@ -157,7 +157,7 @@ function updateUI() {
     <div class="card wallet">
       <div class="overlay"></div>
       <div class="circle">
-        <img src="../assets/img/jar-icon/${jars[key].id}.png" alt="" srcset="">
+        <img src="./assets/img/jar-icon/${jars[key].id}.png" alt="" srcset="">
       </div>
       <p>${jars[key].name}  ${jars[key].percentage}%</p> 
 
