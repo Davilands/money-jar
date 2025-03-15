@@ -3,12 +3,12 @@ import { readNumber } from "./readMoney.js";
 
 // 🔹 Danh sách hũ tài chính mặc định
 const jars = {
-  essential: { name: "Thiết yếu", percentage: 55, amount: 0 },
-  savings: { name: "Tiết kiệm", percentage: 10, amount: 0 },
-  education: { name: "Giáo dục", percentage: 10, amount: 0 },
-  investment: { name: "Đầu tư", percentage: 10, amount: 0 },
-  enjoyment: { name: "Hưởng thụ", percentage: 10, amount: 0 },
-  charity: { name: "Từ thiện", percentage: 5, amount: 0 }
+  essential: { id: "essential", name: "Thiết yếu", percentage: 55, amount: 0 },
+  savings: { id: "savings", name: "Tiết kiệm", percentage: 10, amount: 0 },
+  education: { id: "education", name: "Giáo dục", percentage: 10, amount: 0 },
+  investment: { id: "investment", name: "Đầu tư", percentage: 10, amount: 0 },
+  enjoyment: { id: "enjoyment", name: "Hưởng thụ", percentage: 10, amount: 0 },
+  charity: { id: "charity", name: "Từ thiện", percentage: 5, amount: 0 }
 };
 
 // Hiển thị GIF và chỉ gọi callback sau 3 giây
@@ -154,9 +154,16 @@ function updateUI() {
     let jarElement = document.createElement("div");
     jarElement.className = "jar";
     jarElement.innerHTML = `
-            <h2>${jars[key].name} (${jars[key].percentage}%)</h2>
-            <p class="amount">${jars[key].amount.toLocaleString()} VND</p>
-        `;
+    <div class="card wallet">
+      <div class="overlay"></div>
+      <div class="circle">
+        <img src="../assets/img/jar-icon/${jars[key].id}.png" alt="" srcset="">
+      </div>
+      <p>${jars[key].name}  ${jars[key].percentage}%</p> 
+
+      <strong class="amount">${jars[key].amount.toLocaleString()} VND</strong>
+    </div>
+    `
     container.appendChild(jarElement);
   }
 
