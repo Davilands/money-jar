@@ -59,7 +59,7 @@ table,
 th,
 td {
   border: 1px solid black;
-  padding: 10px;
+  padding: 8px;
   text-align: left;
 }
 
@@ -70,7 +70,7 @@ th {
 input,
 select,
 button {
-  padding: 8px;
+  padding: 11px;
   margin: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -121,4 +121,29 @@ button {
   max-height: 300px;
 }
 
+.control .input-container {
+  height: 45px;
+}
+
 /* Màu Đỏ cho Rút Tiền */
+
+@media (min-width: 1024px) {
+  .control {
+    margin: 0 auto;
+    width: 40%;
+  }
+
+
+  table {
+    width: 90%;
+  }
+
+
+}
+
+@media (max-width: 768px) {
+  .control {
+    margin: 0 auto;
+    width: 90%;
+  }
+}

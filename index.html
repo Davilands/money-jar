@@ -9,9 +9,11 @@
   <script type="module" src="./js/main.js"></script>
   <link rel="stylesheet" href="./assets/css/style.css">
   <link rel="stylesheet" href="./assets/css/card.css">
+  <link rel="stylesheet" href="./assets/css/inp.css">
+  <link rel="stylesheet" href="./assets/css/select.css">
 </head>
 
-<body>
+<body style="padding: 20px; height: auto;">
   <!-- Dialog xác nhận -->
   <dialog id="confirmDialog">
     <p id="confirmMessage"></p>
@@ -30,30 +32,38 @@
 
   <h1>Quản lý Hũ Tài Chính</h1>
 
+
   <div id="transactionGifContainer" class="gif-container">
     <img id="transactionGif" src="" alt="Transaction GIF">
   </div>
 
 
-  <div>
-    <!-- From Uiverse.io by WhiteNervosa -->
-    <input type="number" id="totalAmount" placeholder="Nhập số tiền tổng">
-    <button class="add-btn" id="btnNapTien">Nạp Tiền</button>
+  <div class="control">
+    <div class="input-container">
+      <input type="number" id="totalAmount" placeholder="Nhập số tiền tổng">
+      <button class="button add-btn" id="btnNapTien">Nạp</button>
+    </div>
 
+
+    <hr>
+    <div class="input-withdraw">
+      <select id="jarSelect">
+        <option value="essential">Thiết yếu</option>
+        <option value="savings">Tiết kiệm</option>
+        <option value="education">Giáo dục</option>
+        <option value="investment">Đầu tư</option>
+        <option value="enjoyment">Hưởng thụ</option>
+        <option value="charity">Từ thiện</option>
+      </select>
+      <input placeholder="Nhập số tiền rút" type="number" id="withdrawAmount">
+      <button class="invite-btn" type="button" id="btnRutTien">
+        Rút
+      </button>
+    </div>
   </div>
 
-  <div>
-    <input type="number" id="withdrawAmount" placeholder="Nhập số tiền rút">
-    <select id="jarSelect">
-      <option value="essential">Thiết yếu</option>
-      <option value="savings">Tiết kiệm</option>
-      <option value="education">Giáo dục</option>
-      <option value="investment">Đầu tư</option>
-      <option value="enjoyment">Hưởng thụ</option>
-      <option value="charity">Từ thiện</option>
-    </select>
-    <button class="withdraw-btn" id="btnRutTien">Rút Tiền</button>
-  </div>
+
+
 
   <div class="total-money">
     Tổng số dư: <span id="total-money">0</span> VND
