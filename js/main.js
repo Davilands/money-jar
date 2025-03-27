@@ -174,9 +174,6 @@ function updateUI() {
 
 // 🔹 Xác nhận & Nạp tiền vào các hũ
 async function confirmNapTien() {
-  const isVerified = await verifyPassword();
-  if (!isVerified) return;
-
   let money = parseInt(document.getElementById("totalAmount").value);
   if (money > 0) {
     showConfirmDialog(`Bạn có chắc chắn muốn nạp ${money.toLocaleString()} VND vào các hũ không?<br>bằng chữ: <b style="color: red">${readNumber(money)}</b> `, async function () {
@@ -200,9 +197,6 @@ async function confirmNapTien() {
 
 // 🔹 Xác nhận & Rút tiền từ một hũ cụ thể
 async function confirmRutTien() {
-  const isVerified = await verifyPassword();
-  if (!isVerified) return;
-
   let money = parseInt(document.getElementById("withdrawAmount").value);
   let jarKey = document.getElementById("jarSelect").value;
 
@@ -227,32 +221,6 @@ async function confirmRutTien() {
   }
 }
 
-
-// Hỏi và xác minh mật khẩu
-async function verifyPassword() {
-  const savedPassword = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-  if (!savedPassword) {
-    // Lần đầu dùng, hỏi mật khẩu và lưu
-    const pw = prompt("🔐 Thiết lập mật khẩu:");
-    if (pw) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, pw);
-      return true;
-    } else {
-      alert("❌ Bạn chưa nhập mật khẩu!");
-      return false;
-    }
-  } else {
-    // Đã có mật khẩu, yêu cầu xác minh
-    const input = prompt("🔐 Nhập mật khẩu để tiếp tục:");
-    if (input === savedPassword) {
-      return true;
-    } else {
-      alert("❌ Sai mật khẩu!");
-      return false;
-    }
-  }
-}
 
 // 🔹 Load dữ liệu khi trang tải
 window.onload = async function () {
