@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Mã hóa Firebase URL</title>
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+</head>
+
+<body>
+  <h2>Mã hóa Firebase URL</h2>
+  <input id="url" type="text" placeholder="Nhập Firebase URL" style="width: 300px;">
+  <input id="key" type="password" placeholder="Nhập mật khẩu" style="width: 200px;">
+  <button onclick="encryptURL()">Mã hóa</button>
+  <p><strong>Kết quả mã hóa:</strong></p>
+  <textarea id="result" style="width: 100%; height: 100px;"></textarea>
+
+  <script>
+    function encryptURL() {
+      const url = document.getElementById("url").value;
+      const key = document.getElementById("key").value;
+
+      if (!url || !key) {
+        alert("Nhập URL và mật khẩu!");
+        return;
+      }
+
+      const encrypted = CryptoJS.AES.encrypt(url, key).toString();
+      document.getElementById("result").value = encrypted;
+    }
+  </script>
+</body>
+
+</html>

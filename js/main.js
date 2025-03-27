@@ -1,6 +1,8 @@
 import { saveData, getData, addTransaction } from "./firebase.js";
 import { readNumber } from "./readMoney.js";
 
+const LOCAL_STORAGE_KEY = "05cc84930bb8437e796b83764335703de333b844e9774e32f627215a973a5de5";
+
 // 🔹 Danh sách hũ tài chính mặc định
 const jars = {
   essential: { id: "essential", name: "Thiết yếu", percentage: 55, amount: 0 },
@@ -171,7 +173,10 @@ function updateUI() {
 }
 
 // 🔹 Xác nhận & Nạp tiền vào các hũ
-function confirmNapTien() {
+async function confirmNapTien() {
+  const isVerified = await verifyPassword();
+  if (!isVerified) return;
+
   let money = parseInt(document.getElementById("totalAmount").value);
   if (money > 0) {
     showConfirmDialog(`Bạn có chắc chắn muốn nạp ${money.toLocaleString()} VND vào các hũ không?<br>bằng chữ: <b style="color: red">${readNumber(money)}</b> `, async function () {
@@ -183,19 +188,21 @@ function confirmNapTien() {
       updateUI();
       loadTransactions();
 
-      // Chạy GIF, rồi mới hiện dialog sau 3s
       showTransactionGif("deposit", () => {
         showDialog(`✅ Đã nạp ${money.toLocaleString()} VND vào các hũ`);
       });
-
     });
   } else {
     showDialog("⚠️ Vui lòng nhập số tiền hợp lệ!");
   }
 }
 
+
 // 🔹 Xác nhận & Rút tiền từ một hũ cụ thể
-function confirmRutTien() {
+async function confirmRutTien() {
+  const isVerified = await verifyPassword();
+  if (!isVerified) return;
+
   let money = parseInt(document.getElementById("withdrawAmount").value);
   let jarKey = document.getElementById("jarSelect").value;
 
@@ -207,20 +214,45 @@ function confirmRutTien() {
         await saveData(`jar-money/${jarKey}/amount`, jars[jarKey].amount);
         await addTransaction("Rút tiền", jars[jarKey].name, money, reason);
         updateUI();
-        loadTransactions(); // Load lại lịch sử giao dịch
-        // Chạy GIF, rồi mới hiện dialog sau 3s
+        loadTransactions();
+
         showTransactionGif("withdraw", () => {
           showDialog(`✅ Đã rút ${money.toLocaleString()} VND từ hũ ${jars[jarKey].name} <br> Lý do: ${reason}`);
         });
       },
-      true // Kích hoạt ô nhập lý do
+      true
     );
-
   } else {
     showDialog(`❌ Hũ ${jars[jarKey].name} không đủ tiền!`);
   }
 }
 
+
+// Hỏi và xác minh mật khẩu
+async function verifyPassword() {
+  const savedPassword = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+  if (!savedPassword) {
+    // Lần đầu dùng, hỏi mật khẩu và lưu
+    const pw = prompt("🔐 Thiết lập mật khẩu:");
+    if (pw) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, pw);
+      return true;
+    } else {
+      alert("❌ Bạn chưa nhập mật khẩu!");
+      return false;
+    }
+  } else {
+    // Đã có mật khẩu, yêu cầu xác minh
+    const input = prompt("🔐 Nhập mật khẩu để tiếp tục:");
+    if (input === savedPassword) {
+      return true;
+    } else {
+      alert("❌ Sai mật khẩu!");
+      return false;
+    }
+  }
+}
 
 // 🔹 Load dữ liệu khi trang tải
 window.onload = async function () {
