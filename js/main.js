@@ -200,26 +200,67 @@ async function confirmRutTien() {
   let money = parseInt(document.getElementById("withdrawAmount").value);
   let jarKey = document.getElementById("jarSelect").value;
 
-  if (money > 0 && jars[jarKey].amount >= money) {
-    showConfirmDialog(
-      `Bạn có chắc chắn muốn rút ${money.toLocaleString()} VND từ hũ ${jars[jarKey].name} không?<br>Bằng chữ: <b style="color: red">${readNumber(money)}</b>`,
-      async function (reason) {
-        jars[jarKey].amount -= money;
-        await saveData(`jar-money/${jarKey}/amount`, jars[jarKey].amount);
-        await addTransaction("Rút tiền", jars[jarKey].name, money, reason);
-        updateUI();
-        loadTransactions();
+  if (money > 0) {
+    if (jarKey === "all") {
+      // 👉 Rút từ tất cả các hũ (như phần đã viết trước)
+      let canWithdraw = true;
+      let requiredMoney = {};
 
-        showTransactionGif("withdraw", () => {
-          showDialog(`✅ Đã rút ${money.toLocaleString()} VND từ hũ ${jars[jarKey].name} <br> Lý do: ${reason}`);
-        });
-      },
-      true
-    );
+      for (let key in jars) {
+        requiredMoney[key] = (money * jars[key].percentage) / 100;
+        if (jars[key].amount < requiredMoney[key]) {
+          canWithdraw = false;
+          break;
+        }
+      }
+
+      if (!canWithdraw) {
+        showDialog(`❌ Một trong các hũ không đủ tiền để rút!`);
+        return;
+      }
+
+      showConfirmDialog(
+        `Bạn có chắc muốn rút ${money.toLocaleString()} VND từ tất cả các hũ không?<br>Bằng chữ: <b style="color:red">${readNumber(money)}</b>`,
+        async function (reason) {
+          for (let key in jars) {
+            await withdrawFromSingleJar(key, requiredMoney[key], reason);
+          }
+        },
+        true
+      );
+    } else {
+      // 👉 Rút từ 1 hũ cụ thể – gọi hàm mới
+      if (jars[jarKey].amount >= money) {
+        showConfirmDialog(
+          `Bạn có chắc muốn rút ${money.toLocaleString()} VND từ hũ ${jars[jarKey].name} không?<br>Bằng chữ: <b style="color:red">${readNumber(money)}</b>`,
+          async function (reason) {
+            await withdrawFromSingleJar(jarKey, money, reason);
+          },
+          true
+        );
+      } else {
+        showDialog(`❌ Hũ ${jars[jarKey].name} không đủ tiền!`);
+      }
+    }
   } else {
-    showDialog(`❌ Hũ ${jars[jarKey].name} không đủ tiền!`);
+    showDialog("⚠️ Vui lòng nhập số tiền hợp lệ!");
   }
 }
+
+async function withdrawFromSingleJar(jarKey, amount, reason) {
+  jars[jarKey].amount -= amount;
+  await saveData(`jar-money/${jarKey}/amount`, jars[jarKey].amount);
+  await addTransaction("Rút tiền", jars[jarKey].name, amount, reason);
+
+  updateUI();
+  loadTransactions();
+
+  showTransactionGif("withdraw", () => {
+    showDialog(`✅ Đã rút ${amount.toLocaleString()} VND từ hũ ${jars[jarKey].name}<br>Lý do: ${reason}`);
+  });
+}
+
+
 
 
 // 🔹 Load dữ liệu khi trang tải
