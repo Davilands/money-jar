@@ -39,9 +39,20 @@
 
 
   <div class="control">
-    <div class="input-container">
-      <input type="number" id="totalAmount" placeholder="Nhập số tiền tổng">
-      <button class="button add-btn" id="btnNapTien">Nạp</button>
+    <div class="input-withdraw">
+      <select id="jarSelectAdd">
+        <option value="all">Tất cả các hũ</option>
+        <option value="essential">Thiết yếu</option>
+        <option value="savings">Tiết kiệm</option>
+        <option value="education">Giáo dục</option>
+        <option value="investment">Đầu tư</option>
+        <option value="enjoyment">Hưởng thụ</option>
+        <option value="charity">Từ thiện</option>
+      </select>
+      <input placeholder="Nhập số tiền nạp" type="number" id="addAmount">
+      <button class="invite-btn" type="button" id="btnNapTien">
+        Nạp
+      </button>
     </div>
 
 

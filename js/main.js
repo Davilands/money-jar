@@ -134,6 +134,7 @@ async function loadTransactions() {
         <td>${trx.amount.toLocaleString()} VND</td>
         <td>${trx.time}</td>
         <td>${trx.reason ? trx.reason : "Không có lý do"}</td>
+        <td>${trx.balanceAfter ? trx.balanceAfter.toLocaleString() + " VND" : "—"}</td>
       `;
       tbody.appendChild(row);
     });
@@ -174,25 +175,42 @@ function updateUI() {
 
 // 🔹 Xác nhận & Nạp tiền vào các hũ
 async function confirmNapTien() {
-  let money = parseInt(document.getElementById("totalAmount").value);
-  if (money > 0) {
-    showConfirmDialog(`Bạn có chắc chắn muốn nạp ${money.toLocaleString()} VND vào các hũ không?<br>bằng chữ: <b style="color: red">${readNumber(money)}</b> `, async function () {
-      for (let key in jars) {
-        jars[key].amount += (money * jars[key].percentage) / 100;
-        await saveData(`jar-money/${key}/amount`, jars[key].amount);
-      }
-      await addTransaction("Nạp tiền", "Tất cả", money);
-      updateUI();
-      loadTransactions();
+  const money = parseInt(document.getElementById("addAmount").value);
+  const jarKey = document.getElementById("jarSelectAdd").value;
 
-      showTransactionGif("deposit", () => {
-        showDialog(`✅ Đã nạp ${money.toLocaleString()} VND vào các hũ`);
-      });
-    });
+  if (money > 0) {
+    showConfirmDialog(
+      `Bạn có chắc chắn muốn nạp ${money.toLocaleString()} VND ${jarKey === "all" ? "vào tất cả các hũ" : `vào hũ ${jars[jarKey].name}`} không?<br>
+       Bằng chữ: <b style="color: red">${readNumber(money)}</b>`,
+      async function (reason) {
+        if (jarKey === "all") {
+          // Nạp theo tỷ lệ
+          for (let key in jars) {
+            jars[key].amount += (money * jars[key].percentage) / 100;
+            await saveData(`jar-money/${key}/amount`, jars[key].amount);
+          }
+          await addTransaction("Nạp tiền", "Tất cả", money, reason, getTotalBalance());
+        } else {
+          // Nạp vào 1 hũ cụ thể
+          jars[jarKey].amount += money;
+          await saveData(`jar-money/${jarKey}/amount`, jars[jarKey].amount);
+          await addTransaction("Nạp tiền", jars[jarKey].name, money, reason, getTotalBalance());
+        }
+
+        updateUI();
+        loadTransactions();
+
+        showTransactionGif("deposit", () => {
+          showDialog(`✅ Đã nạp ${money.toLocaleString()} VND ${jarKey === "all" ? "vào các hũ" : `vào hũ ${jars[jarKey].name}`}<br>Lý do: ${reason}`);
+        });
+      },
+      true // yêu cầu nhập lý do
+    );
   } else {
     showDialog("⚠️ Vui lòng nhập số tiền hợp lệ!");
   }
 }
+
 
 
 // 🔹 Xác nhận & Rút tiền từ một hũ cụ thể
@@ -250,7 +268,9 @@ async function confirmRutTien() {
 async function withdrawFromSingleJar(jarKey, amount, reason) {
   jars[jarKey].amount -= amount;
   await saveData(`jar-money/${jarKey}/amount`, jars[jarKey].amount);
-  await addTransaction("Rút tiền", jars[jarKey].name, amount, reason);
+  // await addTransaction("Rút tiền", jars[jarKey].name, amount, reason);
+  await addTransaction("Rút tiền", jars[jarKey].name, amount, reason, getTotalBalance());
+
 
   updateUI();
   loadTransactions();
@@ -260,8 +280,9 @@ async function withdrawFromSingleJar(jarKey, amount, reason) {
   });
 }
 
-
-
+function getTotalBalance() {
+  return Object.values(jars).reduce((sum, jar) => sum + jar.amount, 0);
+}
 
 // 🔹 Load dữ liệu khi trang tải
 window.onload = async function () {
