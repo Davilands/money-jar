@@ -294,6 +294,17 @@ window.onload = async function () {
   document.getElementById("closeDialog").addEventListener("click", () => {
     document.getElementById("messageDialog").close();
   });
+  document.getElementById("resetModeBtn").addEventListener("click", () => {
+    const confirmReset = confirm("⚠️ Bạn có chắc muốn xóa cấu hình chế độ?\n(Hệ thống sẽ hỏi lại khi tải lại trang)");
+
+    if (confirmReset) {
+      localStorage.removeItem("firebase_mode");
+      localStorage.removeItem("firebase_url");
+      alert("✅ Đã đặt lại chế độ. Vui lòng tải lại trang.");
+      location.reload();
+    }
+  });
+
 };
 
 export { confirmNapTien, confirmRutTien };
