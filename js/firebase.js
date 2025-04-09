@@ -48,34 +48,55 @@ function saveToLocal(path, data) {
 
 
 function loadFromLocal(path) {
-  // Trường hợp lấy tất cả các hũ
+  // Xử lý load toàn bộ các giao dịch
+  if (path === "transactions") {
+    const transactions = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith("local_transactions/")) {
+        try {
+          const id = key.split("/")[1];
+          const value = JSON.parse(localStorage.getItem(key));
+          transactions[id] = value;
+        } catch (e) {
+          console.warn("❌ Lỗi khi parse giao dịch:", key);
+        }
+      }
+    }
+    return Object.keys(transactions).length ? transactions : null;
+  }
+
+  // Xử lý load toàn bộ các hũ
   if (path === "jar-money") {
     const jars = {};
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key.startsWith("local_jar-money/")) {
         try {
-          const jarKey = key.split("/")[1]; // e.g. "essential"
+          const jarKey = key.split("/")[1];
           const value = JSON.parse(localStorage.getItem(key));
-          jars[jarKey] = { amount: value }; // để giống cấu trúc Firebase
+          jars[jarKey] = { amount: value };
         } catch (e) {
-          console.warn("Lỗi parse local jar:", key);
+          console.warn("❌ Lỗi khi parse hũ:", key);
         }
       }
     }
     return Object.keys(jars).length ? jars : null;
   }
 
-  // Trường hợp load 1 path cụ thể
+  // Trường hợp load 1 key cụ thể (giao dịch hoặc hũ cụ thể)
   const storageKey = `local_${path}`;
   const raw = localStorage.getItem(storageKey);
   if (!raw) return null;
+
   try {
     return JSON.parse(raw);
   } catch (e) {
+    console.warn("❌ Lỗi khi parse JSON:", storageKey);
     return null;
   }
 }
+
 
 
 async function saveData(path, data) {
